@@ -1,5 +1,7 @@
 import 'package:dealinesapp/db/dao/deadline_dao.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 
 import 'db/database.dart';
 import 'db/entity/deadline.dart';
@@ -25,6 +27,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+      ).copyWith(
+          inputDecorationTheme: InputDecorationTheme(border: OutlineInputBorder()),
       ),
       home: DeadlinesPage(
         title: 'DeadLines',
@@ -156,8 +160,11 @@ class AddDeadlinePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text(_title)),
-        body: MyStatefulWidget(this.deadlineDao),
+      appBar: AppBar(title: const Text(_title)),
+      body: Padding(
+        padding: EdgeInsets.all(24),
+        child: MyStatefulWidget(this.deadlineDao),
+      ),
     );
   }
 }
@@ -178,37 +185,59 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   final _formKey = GlobalKey<FormState>();
 
+  String _title;
+
   @override
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: <Widget>[
           TextFormField(
             decoration: const InputDecoration(
-              hintText: 'Enter your email',
+              hintText: 'Title',
             ),
             validator: (value) {
               if (value.isEmpty) {
-                return 'Please enter some text';
+                return 'Enter a title';
               }
               return null;
             },
+            onSaved: (value) {
+              _title = value;
+            },
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: RaisedButton(
-              onPressed: () async {
-                // Validate will return true if the form is valid, or false if
-                // the form is invalid.
-                if (_formKey.currentState.validate()) {
-                  await deadlineDao.insertDeadline(Deadline(null, "Thing"));
-                  Navigator.pop(context);
-                }
-              },
-              child: Text('Submit'),
-            ),
+          SizedBox(height: 24),
+          DateTimeField(
+            format: DateFormat("yyyy-MM-dd HH:mm"),
+            onShowPicker: (context, currentValue) async {
+              final date = await showDatePicker(
+                  context: context,
+                  firstDate: DateTime.now(),
+                  initialDate: currentValue ?? DateTime.now(),
+                  lastDate: DateTime(2100),
+              );
+              if (date != null) {
+                final time = await showTimePicker(
+                  context: context,
+                  initialTime:
+                  TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                );
+                return DateTimeField.combine(date, time);
+              } else {
+                return currentValue;
+              }
+            },
+          ),
+          RaisedButton(
+            child: Text('SAVE'),
+            onPressed: () async {
+              if (_formKey.currentState.validate()) {
+                await deadlineDao.insertDeadline(Deadline(null, _title));
+                Navigator.pop(context);
+              }
+            },
           ),
         ],
       ),
