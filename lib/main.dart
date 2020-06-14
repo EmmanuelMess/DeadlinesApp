@@ -1,7 +1,11 @@
+import 'dart:ui';
+
 import 'package:dealinesapp/db/dao/deadline_dao.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+
+import 'dart:math';
 
 import 'db/database.dart';
 import 'db/entity/deadline.dart';
@@ -65,17 +69,31 @@ class _DeadlinesPageState extends State<DeadlinesPage> {
     await deadlineDao.deleteDeadlineById(deadline);
   }
 
+  Color _getCardColor(Duration timeToDeadline) {
+    final longWayAwayColor = Colors.black12;
+    final nowColor = Colors.red;
+
+    if(timeToDeadline.inDays >= 20) {
+      return longWayAwayColor;
+    }
+
+    double normalizedTime = max<double>(0, timeToDeadline.inDays / 20.0);
+
+    return Color.lerp(nowColor, longWayAwayColor, normalizedTime);
+  }
+
   Widget _createCard(BuildContext context, final Deadline deadline) {
     final DateTime time = DateTime.fromMillisecondsSinceEpoch(deadline.deadline);
+    final Duration timeToDeadline = time.difference(DateTime.now());
 
     return Card(
-      color: Color.lerp(Colors.black12, Colors.red, 1.0),
+      color: _getCardColor(timeToDeadline),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           ListTile(
             title: Text(deadline.title),
-            subtitle: Text('Due in ${time.difference(DateTime.now()).inDays} days'),
+            subtitle: Text('Due in ${timeToDeadline.inDays} days'),
           ),
           ButtonBar(
             children: <Widget>[

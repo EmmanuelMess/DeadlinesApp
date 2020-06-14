@@ -9,6 +9,6 @@ abstract class DeadlineDao {
   @insert
   Future<void> insertDeadline(Deadline person);
 
-  @Query('SELECT * FROM Deadline')
+  @Query('SELECT * FROM Deadline ORDER BY Deadline.deadline ASC')
   Stream<List<Deadline>> findAllDeadlinesAsStream();
 }

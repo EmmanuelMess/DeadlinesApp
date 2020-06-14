@@ -132,8 +132,11 @@ class _$DeadlineDao extends DeadlineDao {
 
   @override
   Stream<List<Deadline>> findAllDeadlinesAsStream() {
-    return _queryAdapter.queryListStream('SELECT * FROM Deadline',
-        queryableName: 'Deadline', isView: false, mapper: _deadlineMapper);
+    return _queryAdapter.queryListStream(
+        'SELECT * FROM Deadline ORDER BY Deadline.deadline ASC',
+        queryableName: 'Deadline',
+        isView: false,
+        mapper: _deadlineMapper);
   }
 
   @override
