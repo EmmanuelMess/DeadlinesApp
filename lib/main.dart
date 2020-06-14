@@ -23,10 +23,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'DeadLines',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.deepOrange,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(
+      home: DeadlinesPage(
         title: 'DeadLines',
         deadlineDao: deadlineDao,
       ),
@@ -34,8 +34,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({
+class DeadlinesPage extends StatefulWidget {
+  DeadlinesPage({
     Key key,
     this.title,
     @required this.deadlineDao
@@ -45,13 +45,13 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState(deadlineDao);
+  _DeadlinesPageState createState() => _DeadlinesPageState(deadlineDao);
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _DeadlinesPageState extends State<DeadlinesPage> {
   final DeadlineDao deadlineDao;
 
-  _MyHomePageState(this.deadlineDao);
+  _DeadlinesPageState(this.deadlineDao);
 
   void _addDeadline(final Deadline deadline) async {
     await deadlineDao.insertDeadline(deadline);
@@ -63,6 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _createCard(BuildContext context, final Deadline deadline) {
     return Card(
+      color: Color.lerp(Colors.black12, Colors.red, 1.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -73,6 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ButtonBar(
             children: <Widget>[
               FlatButton(
+                textColor: Colors.white,
                 child: const Text('FINISHED'),
                 onPressed: () {
                   _removeDeadline(deadline);
@@ -123,16 +125,92 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Builder(
         builder: (context) =>
             Align(
-              alignment: Alignment.topCenter,
-              child: _createCards(context)
+                alignment: Alignment.topCenter,
+                child: _createCards(context)
             ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => {
-          _addDeadline(Deadline(null, "Thing"))
+        onPressed: () =>
+        {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddDeadlinePage(this.deadlineDao),
+            ),
+          )
         },
         tooltip: 'Increment',
         child: Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class AddDeadlinePage extends StatelessWidget {
+  final DeadlineDao deadlineDao;
+
+  const AddDeadlinePage(this.deadlineDao);
+
+  static const String _title = 'Flutter Code Sample';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(title: const Text(_title)),
+        body: MyStatefulWidget(this.deadlineDao),
+    );
+  }
+}
+
+class MyStatefulWidget extends StatefulWidget {
+  final DeadlineDao deadlineDao;
+
+  MyStatefulWidget(this.deadlineDao, {Key key}) : super(key: key);
+
+  @override
+  _MyStatefulWidgetState createState() => _MyStatefulWidgetState(this.deadlineDao);
+}
+
+class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+  final DeadlineDao deadlineDao;
+
+  _MyStatefulWidgetState(this.deadlineDao);
+
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          TextFormField(
+            decoration: const InputDecoration(
+              hintText: 'Enter your email',
+            ),
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'Please enter some text';
+              }
+              return null;
+            },
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: RaisedButton(
+              onPressed: () async {
+                // Validate will return true if the form is valid, or false if
+                // the form is invalid.
+                if (_formKey.currentState.validate()) {
+                  await deadlineDao.insertDeadline(Deadline(null, "Thing"));
+                  Navigator.pop(context);
+                }
+              },
+              child: Text('Submit'),
+            ),
+          ),
+        ],
       ),
     );
   }
