@@ -70,7 +70,7 @@ class _DeadlinesPageState extends State<DeadlinesPage> {
   }
 
   Color _getCardColor(Duration timeToDeadline) {
-    final longWayAwayColor = Colors.black12;
+    final longWayAwayColor = Colors.red.shade50;
     final nowColor = Colors.red;
 
     if(timeToDeadline.inDays >= 20) {
@@ -119,7 +119,7 @@ class _DeadlinesPageState extends State<DeadlinesPage> {
                   final snackBar = SnackBar(
                     content: Text('Nice!'),
                     action: SnackBarAction(
-                      label: 'Undo',
+                      label: 'UNDO',
                       onPressed: () {
                         _addDeadline(deadline);
                       },
