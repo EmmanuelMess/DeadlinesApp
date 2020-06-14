@@ -3,9 +3,6 @@ import 'package:floor/floor.dart';
 
 @dao
 abstract class DeadlineDao {
-  @Query('SELECT * FROM Deadline')
-  Future<List<Deadline>> findAllDeadlines();
-
   @delete
   Future<void> deleteDeadlineById(Deadline person);
 

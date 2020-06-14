@@ -125,12 +125,6 @@ class _$DeadlineDao extends DeadlineDao {
   final DeletionAdapter<Deadline> _deadlineDeletionAdapter;
 
   @override
-  Future<List<Deadline>> findAllDeadlines() async {
-    return _queryAdapter.queryList('SELECT * FROM Deadline',
-        mapper: _deadlineMapper);
-  }
-
-  @override
   Stream<List<Deadline>> findAllDeadlinesAsStream() {
     return _queryAdapter.queryListStream('SELECT * FROM Deadline',
         queryableName: 'Deadline', isView: false, mapper: _deadlineMapper);
