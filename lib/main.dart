@@ -82,6 +82,19 @@ class _DeadlinesPageState extends State<DeadlinesPage> {
     return Color.lerp(nowColor, longWayAwayColor, normalizedTime);
   }
 
+  String _dueText(Duration timeToDeadline) {
+    if(timeToDeadline.inDays > 0) {
+      return 'Due in ${timeToDeadline.inDays} days';
+    }
+    if(timeToDeadline.inHours > 1) {
+      return 'Due in ${timeToDeadline.inHours} hours!';
+    }
+    if(timeToDeadline.inMinutes > 15) {
+      return 'Due in ${timeToDeadline.inMinutes} minutes!';
+    }
+    return 'Due NOW!';
+  }
+
   Widget _createCard(BuildContext context, final Deadline deadline) {
     final DateTime time = DateTime.fromMillisecondsSinceEpoch(deadline.deadline);
     final Duration timeToDeadline = time.difference(DateTime.now());
@@ -93,7 +106,7 @@ class _DeadlinesPageState extends State<DeadlinesPage> {
         children: <Widget>[
           ListTile(
             title: Text(deadline.title),
-            subtitle: Text('Due in ${timeToDeadline.inDays} days'),
+            subtitle: Text(_dueText(timeToDeadline)),
           ),
           ButtonBar(
             children: <Widget>[
