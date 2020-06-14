@@ -80,7 +80,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Deadline` (`id` INTEGER, `title` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Deadline` (`id` INTEGER, `title` TEXT, `deadline` INTEGER, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -100,15 +100,21 @@ class _$DeadlineDao extends DeadlineDao {
         _deadlineInsertionAdapter = InsertionAdapter(
             database,
             'Deadline',
-            (Deadline item) =>
-                <String, dynamic>{'id': item.id, 'title': item.title},
+            (Deadline item) => <String, dynamic>{
+                  'id': item.id,
+                  'title': item.title,
+                  'deadline': item.deadline
+                },
             changeListener),
         _deadlineDeletionAdapter = DeletionAdapter(
             database,
             'Deadline',
             ['id'],
-            (Deadline item) =>
-                <String, dynamic>{'id': item.id, 'title': item.title},
+            (Deadline item) => <String, dynamic>{
+                  'id': item.id,
+                  'title': item.title,
+                  'deadline': item.deadline
+                },
             changeListener);
 
   final sqflite.DatabaseExecutor database;
@@ -117,8 +123,8 @@ class _$DeadlineDao extends DeadlineDao {
 
   final QueryAdapter _queryAdapter;
 
-  static final _deadlineMapper = (Map<String, dynamic> row) =>
-      Deadline(row['id'] as int, row['title'] as String);
+  static final _deadlineMapper = (Map<String, dynamic> row) => Deadline(
+      row['id'] as int, row['title'] as String, row['deadline'] as int);
 
   final InsertionAdapter<Deadline> _deadlineInsertionAdapter;
 

@@ -66,6 +66,8 @@ class _DeadlinesPageState extends State<DeadlinesPage> {
   }
 
   Widget _createCard(BuildContext context, final Deadline deadline) {
+    final DateTime time = DateTime.fromMillisecondsSinceEpoch(deadline.deadline);
+
     return Card(
       color: Color.lerp(Colors.black12, Colors.red, 1.0),
       child: Column(
@@ -73,7 +75,7 @@ class _DeadlinesPageState extends State<DeadlinesPage> {
         children: <Widget>[
           ListTile(
             title: Text(deadline.title),
-            subtitle: Text('Due in two days'),
+            subtitle: Text('Due in ${time.difference(DateTime.now()).inDays} days'),
           ),
           ButtonBar(
             children: <Widget>[
@@ -186,6 +188,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   final _formKey = GlobalKey<FormState>();
 
   String _title;
+  DateTime _deadline;
 
   @override
   Widget build(BuildContext context) {
@@ -204,9 +207,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               }
               return null;
             },
-            onSaved: (value) {
+            onChanged: (String value) => setState(() {
               _title = value;
-            },
+            }),
+            onSaved: (String value) => setState(() {
+              _title = value;
+            }),
           ),
           SizedBox(height: 24),
           DateTimeField(
@@ -221,20 +227,29 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               if (date != null) {
                 final time = await showTimePicker(
                   context: context,
-                  initialTime:
-                  TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                  initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
                 );
                 return DateTimeField.combine(date, time);
               } else {
                 return currentValue;
               }
             },
+            onChanged: (DateTime value) => setState(() {
+              _deadline = value;
+            }),
+            onSaved: (DateTime value) => setState(() {
+              _deadline = value;
+            }),
           ),
           RaisedButton(
             child: Text('SAVE'),
             onPressed: () async {
               if (_formKey.currentState.validate()) {
-                await deadlineDao.insertDeadline(Deadline(null, _title));
+                await deadlineDao.insertDeadline(Deadline(
+                    null,
+                  _title,
+                  _deadline.millisecondsSinceEpoch
+                ));
                 Navigator.pop(context);
               }
             },

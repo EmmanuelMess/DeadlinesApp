@@ -7,5 +7,7 @@ class Deadline {
 
   final String title;
 
-  Deadline(this.id, this.title);
+  final int deadline;
+
+  Deadline(this.id, this.title, this.deadline);
 }
