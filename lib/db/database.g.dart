@@ -102,6 +102,13 @@ class _$DeadlineDao extends DeadlineDao {
             'Deadline',
             (Deadline item) =>
                 <String, dynamic>{'id': item.id, 'title': item.title},
+            changeListener),
+        _deadlineDeletionAdapter = DeletionAdapter(
+            database,
+            'Deadline',
+            ['id'],
+            (Deadline item) =>
+                <String, dynamic>{'id': item.id, 'title': item.title},
             changeListener);
 
   final sqflite.DatabaseExecutor database;
@@ -115,23 +122,27 @@ class _$DeadlineDao extends DeadlineDao {
 
   final InsertionAdapter<Deadline> _deadlineInsertionAdapter;
 
+  final DeletionAdapter<Deadline> _deadlineDeletionAdapter;
+
   @override
-  Future<List<Deadline>> findAllPersons() async {
+  Future<List<Deadline>> findAllDeadlines() async {
     return _queryAdapter.queryList('SELECT * FROM Deadline',
         mapper: _deadlineMapper);
   }
 
   @override
-  Stream<Deadline> findPersonById(int id) {
-    return _queryAdapter.queryStream('SELECT * FROM Deadline WHERE id = ?',
-        arguments: <dynamic>[id],
-        queryableName: 'Deadline',
-        isView: false,
-        mapper: _deadlineMapper);
+  Stream<List<Deadline>> findAllDeadlinesAsStream() {
+    return _queryAdapter.queryListStream('SELECT * FROM Deadline',
+        queryableName: 'Deadline', isView: false, mapper: _deadlineMapper);
   }
 
   @override
-  Future<void> insertPerson(Deadline person) async {
+  Future<void> insertDeadline(Deadline person) async {
     await _deadlineInsertionAdapter.insert(person, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> deleteDeadlineById(Deadline person) async {
+    await _deadlineDeletionAdapter.delete(person);
   }
 }

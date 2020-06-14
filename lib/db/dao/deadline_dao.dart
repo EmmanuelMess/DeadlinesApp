@@ -4,11 +4,14 @@ import 'package:floor/floor.dart';
 @dao
 abstract class DeadlineDao {
   @Query('SELECT * FROM Deadline')
-  Future<List<Deadline>> findAllPersons();
+  Future<List<Deadline>> findAllDeadlines();
 
-  @Query('SELECT * FROM Deadline WHERE id = :id')
-  Stream<Deadline> findPersonById(int id);
+  @delete
+  Future<void> deleteDeadlineById(Deadline person);
 
   @insert
-  Future<void> insertPerson(Deadline person);
+  Future<void> insertDeadline(Deadline person);
+
+  @Query('SELECT * FROM Deadline')
+  Stream<List<Deadline>> findAllDeadlinesAsStream();
 }
