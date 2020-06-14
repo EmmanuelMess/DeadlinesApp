@@ -70,7 +70,7 @@ class _DeadlinesPageState extends State<DeadlinesPage> {
   }
 
   Color _getCardColor(Duration timeToDeadline) {
-    final longWayAwayColor = Colors.red.shade50;
+    final longWayAwayColor = Colors.red.shade100;
     final nowColor = Colors.red;
 
     if(timeToDeadline.inDays >= 20) {
@@ -188,12 +188,10 @@ class AddDeadlinePage extends StatelessWidget {
 
   const AddDeadlinePage(this.deadlineDao);
 
-  static const String _title = 'Flutter Code Sample';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text(_title)),
+      appBar: AppBar(title: const Text("Add deadline")),
       body: Padding(
         padding: EdgeInsets.all(24),
         child: MyStatefulWidget(this.deadlineDao),
@@ -226,7 +224,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     return Form(
       key: _formKey,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           TextFormField(
             decoration: const InputDecoration(
@@ -238,41 +236,49 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               }
               return null;
             },
-            onChanged: (String value) => setState(() {
-              _title = value;
-            }),
-            onSaved: (String value) => setState(() {
-              _title = value;
-            }),
+            onChanged: (String value) =>
+                setState(() {
+                  _title = value;
+                }),
+            onSaved: (String value) =>
+                setState(() {
+                  _title = value;
+                }),
           ),
           SizedBox(height: 24),
           DateTimeField(
             format: DateFormat("yyyy-MM-dd HH:mm"),
             onShowPicker: (context, currentValue) async {
               final date = await showDatePicker(
-                  context: context,
-                  firstDate: DateTime.now(),
-                  initialDate: currentValue ?? DateTime.now(),
-                  lastDate: DateTime(2100),
+                context: context,
+                firstDate: DateTime.now(),
+                initialDate: currentValue ?? DateTime.now(),
+                lastDate: DateTime(2100),
               );
               if (date != null) {
                 final time = await showTimePicker(
                   context: context,
-                  initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                  initialTime: TimeOfDay.fromDateTime(
+                      currentValue ?? DateTime.now()),
                 );
                 return DateTimeField.combine(date, time);
               } else {
                 return currentValue;
               }
             },
-            onChanged: (DateTime value) => setState(() {
-              _deadline = value;
-            }),
-            onSaved: (DateTime value) => setState(() {
-              _deadline = value;
-            }),
+            onChanged: (DateTime value) =>
+                setState(() {
+                  _deadline = value;
+                }),
+            onSaved: (DateTime value) =>
+                setState(() {
+                  _deadline = value;
+                }),
           ),
-          RaisedButton(
+          Padding(padding: EdgeInsets.symmetric(vertical: 16.0)),
+           FlatButton(
+            color: Colors.deepOrangeAccent,
+            textColor: Colors.white,
             child: Text('SAVE'),
             onPressed: () async {
               if (_formKey.currentState.validate()) {
