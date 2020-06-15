@@ -3,6 +3,9 @@ import 'package:floor/floor.dart';
 
 @dao
 abstract class DeadlineDao {
+  @update
+  Future<void> updateDeadline(Deadline person);
+
   @delete
   Future<void> deleteDeadlineById(Deadline person);
 

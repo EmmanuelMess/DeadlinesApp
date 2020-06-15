@@ -92,7 +92,10 @@ class _DeadlinesPageState extends State<DeadlinesPage> {
     if(timeToDeadline.inMinutes > 15) {
       return 'Due in ${timeToDeadline.inMinutes} minutes!';
     }
-    return 'Due NOW!';
+    if(timeToDeadline.inMilliseconds > 0) {
+      return 'Due NOW!';
+    }
+    return 'Late!';
   }
 
   Widget _createCard(BuildContext context, final Deadline deadline) {
@@ -107,6 +110,24 @@ class _DeadlinesPageState extends State<DeadlinesPage> {
           ListTile(
             title: Text(deadline.title),
             subtitle: Text(_dueText(timeToDeadline)),
+            trailing: IconButton(
+              icon: Icon(
+                Icons.edit,
+                color: Colors.white,
+              ),
+              onPressed: () =>
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddDeadlinePage(
+                      this.deadlineDao,
+                      previousId: deadline.id,
+                      previousTitle: deadline.title,
+                      previousDeadline: time,
+                    ),
+                  ),
+                ),
+            ),
           ),
           ButtonBar(
             children: <Widget>[
@@ -116,7 +137,7 @@ class _DeadlinesPageState extends State<DeadlinesPage> {
                 onPressed: () {
                   _removeDeadline(deadline);
 
-                  final snackBar = SnackBar(
+                  Scaffold.of(context).showSnackBar(SnackBar(
                     content: Text('Nice!'),
                     action: SnackBarAction(
                       label: 'UNDO',
@@ -124,8 +145,7 @@ class _DeadlinesPageState extends State<DeadlinesPage> {
                         _addDeadline(deadline);
                       },
                     ),
-                  );
-                  Scaffold.of(context).showSnackBar(snackBar);
+                  ));
                 },
               ),
             ],
@@ -168,14 +188,12 @@ class _DeadlinesPageState extends State<DeadlinesPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () =>
-        {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AddDeadlinePage(this.deadlineDao),
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AddDeadlinePage(this.deadlineDao),
+              ),
             ),
-          )
-        },
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ),
@@ -185,8 +203,15 @@ class _DeadlinesPageState extends State<DeadlinesPage> {
 
 class AddDeadlinePage extends StatelessWidget {
   final DeadlineDao deadlineDao;
+  final int previousId;
+  final String previousTitle;
+  final DateTime previousDeadline;
 
-  const AddDeadlinePage(this.deadlineDao);
+  AddDeadlinePage(this.deadlineDao, {
+    this.previousId,
+    this.previousTitle,
+    this.previousDeadline,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -194,7 +219,12 @@ class AddDeadlinePage extends StatelessWidget {
       appBar: AppBar(title: const Text("Add deadline")),
       body: Padding(
         padding: EdgeInsets.all(24),
-        child: MyStatefulWidget(this.deadlineDao),
+        child: MyStatefulWidget(
+          this.deadlineDao,
+          previousId: this.previousId,
+          previousTitle: this.previousTitle,
+          previousDeadline: this.previousDeadline,
+        ),
       ),
     );
   }
@@ -202,22 +232,40 @@ class AddDeadlinePage extends StatelessWidget {
 
 class MyStatefulWidget extends StatefulWidget {
   final DeadlineDao deadlineDao;
+  final int previousId;
+  final String previousTitle;
+  final DateTime previousDeadline;
 
-  MyStatefulWidget(this.deadlineDao, {Key key}) : super(key: key);
+  MyStatefulWidget(this.deadlineDao, {
+    this.previousId,
+    this.previousTitle,
+    this.previousDeadline,
+    Key key,
+  }) : super(key: key);
 
   @override
-  _MyStatefulWidgetState createState() => _MyStatefulWidgetState(this.deadlineDao);
+  _MyStatefulWidgetState createState() => _MyStatefulWidgetState(
+    this.deadlineDao,
+    id: this.previousId,
+    title: this.previousTitle,
+    deadline: this.previousDeadline,
+  );
 }
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   final DeadlineDao deadlineDao;
+  final int id;
+  String title;
+  DateTime deadline;
 
-  _MyStatefulWidgetState(this.deadlineDao);
+  _MyStatefulWidgetState(this.deadlineDao, {
+    this.id,
+    this.title,
+    this.deadline,
+  }) : assert(id == null || (id != null && title != null && deadline != null));
 
   final _formKey = GlobalKey<FormState>();
-
-  String _title;
-  DateTime _deadline;
+  final _now = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -227,6 +275,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           TextFormField(
+            initialValue: title ?? "",
             decoration: const InputDecoration(
               hintText: 'Title',
             ),
@@ -238,28 +287,29 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             },
             onChanged: (String value) =>
                 setState(() {
-                  _title = value;
+                  title = value;
                 }),
             onSaved: (String value) =>
                 setState(() {
-                  _title = value;
+                  title = value;
                 }),
           ),
           SizedBox(height: 24),
           DateTimeField(
+            initialValue: deadline ?? _now,
             format: DateFormat("yyyy-MM-dd HH:mm"),
             onShowPicker: (context, currentValue) async {
               final date = await showDatePicker(
                 context: context,
-                firstDate: DateTime.now(),
-                initialDate: currentValue ?? DateTime.now(),
+                firstDate: deadline != null && deadline.isBefore(_now)? deadline : _now,
+                initialDate: currentValue ?? _now,
                 lastDate: DateTime(2100),
               );
               if (date != null) {
                 final time = await showTimePicker(
                   context: context,
                   initialTime: TimeOfDay.fromDateTime(
-                      currentValue ?? DateTime.now()),
+                      currentValue ?? _now),
                 );
                 return DateTimeField.combine(date, time);
               } else {
@@ -268,11 +318,11 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             },
             onChanged: (DateTime value) =>
                 setState(() {
-                  _deadline = value;
+                  deadline = value;
                 }),
             onSaved: (DateTime value) =>
                 setState(() {
-                  _deadline = value;
+                  deadline = value;
                 }),
           ),
           Padding(padding: EdgeInsets.symmetric(vertical: 16.0)),
@@ -282,11 +332,19 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             child: Text('SAVE'),
             onPressed: () async {
               if (_formKey.currentState.validate()) {
-                await deadlineDao.insertDeadline(Deadline(
+                if(id == null) {
+                  await deadlineDao.insertDeadline(Deadline(
                     null,
-                  _title,
-                  _deadline.millisecondsSinceEpoch
-                ));
+                    title,
+                    deadline.millisecondsSinceEpoch,
+                  ));
+                } else {
+                  await deadlineDao.updateDeadline(Deadline(
+                    id,
+                    title,
+                    deadline.millisecondsSinceEpoch,
+                  ));
+                }
                 Navigator.pop(context);
               }
             },

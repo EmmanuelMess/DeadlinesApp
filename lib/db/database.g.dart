@@ -106,6 +106,16 @@ class _$DeadlineDao extends DeadlineDao {
                   'deadline': item.deadline
                 },
             changeListener),
+        _deadlineUpdateAdapter = UpdateAdapter(
+            database,
+            'Deadline',
+            ['id'],
+            (Deadline item) => <String, dynamic>{
+                  'id': item.id,
+                  'title': item.title,
+                  'deadline': item.deadline
+                },
+            changeListener),
         _deadlineDeletionAdapter = DeletionAdapter(
             database,
             'Deadline',
@@ -128,6 +138,8 @@ class _$DeadlineDao extends DeadlineDao {
 
   final InsertionAdapter<Deadline> _deadlineInsertionAdapter;
 
+  final UpdateAdapter<Deadline> _deadlineUpdateAdapter;
+
   final DeletionAdapter<Deadline> _deadlineDeletionAdapter;
 
   @override
@@ -142,6 +154,11 @@ class _$DeadlineDao extends DeadlineDao {
   @override
   Future<void> insertDeadline(Deadline person) async {
     await _deadlineInsertionAdapter.insert(person, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> updateDeadline(Deadline person) async {
+    await _deadlineUpdateAdapter.update(person, OnConflictStrategy.abort);
   }
 
   @override
