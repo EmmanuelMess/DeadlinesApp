@@ -1,14 +1,14 @@
 import 'dart:ui';
 
-import 'package:dealinesapp/db/dao/deadline_dao.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 
 import 'dart:math';
 
-import 'db/database.dart';
-import 'db/entity/deadline.dart';
+import 'package:deadlinesapp/db/database.dart';
+import 'package:deadlinesapp/db/entity/deadline.dart';
+import 'package:deadlinesapp/db/dao/deadline_dao.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

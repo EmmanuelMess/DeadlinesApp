@@ -1,4 +1,4 @@
-import 'package:dealinesapp/db/entity/deadline.dart';
+import 'package:deadlinesapp/db/entity/deadline.dart';
 import 'package:floor/floor.dart';
 
 @dao
