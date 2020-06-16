@@ -23,7 +23,7 @@ class DeadlinesAppLocalizations {
 
   final String localeName;
 
-  String get deadlines => Intl.message('Dealines', locale: localeName);
+  String get deadlines => Intl.message('Deadlines', locale: localeName);
 
   String get addDeadline => Intl.message('Add deadline', locale: localeName);
 
