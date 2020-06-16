@@ -20,13 +20,13 @@ Future<void> main() async {
   final database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
   final deadlineDao = database.deadlineDao;
 
-  runApp(MyApp(deadlineDao));
+  runApp(DeadlinesApp(deadlineDao));
 }
 
-class MyApp extends StatelessWidget {
+class DeadlinesApp extends StatelessWidget {
   final DeadlineDao deadlineDao;
 
-  const MyApp(this.deadlineDao);
+  const DeadlinesApp(this.deadlineDao);
 
   @override
   Widget build(BuildContext context) {
@@ -216,7 +216,7 @@ class AddDeadlinePage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(24),
-        child: MyStatefulWidget(
+        child: AddDeadlineWidget(
           this.deadlineDao,
           previousId: this.previousId,
           previousTitle: this.previousTitle,
@@ -227,13 +227,13 @@ class AddDeadlinePage extends StatelessWidget {
   }
 }
 
-class MyStatefulWidget extends StatefulWidget {
+class AddDeadlineWidget extends StatefulWidget {
   final DeadlineDao deadlineDao;
   final int previousId;
   final String previousTitle;
   final DateTime previousDeadline;
 
-  MyStatefulWidget(this.deadlineDao, {
+  AddDeadlineWidget(this.deadlineDao, {
     this.previousId,
     this.previousTitle,
     this.previousDeadline,
@@ -241,7 +241,7 @@ class MyStatefulWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _MyStatefulWidgetState createState() => _MyStatefulWidgetState(
+  _AddDeadlineWidgetState createState() => _AddDeadlineWidgetState(
     this.deadlineDao,
     id: this.previousId,
     title: this.previousTitle,
@@ -249,13 +249,13 @@ class MyStatefulWidget extends StatefulWidget {
   );
 }
 
-class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+class _AddDeadlineWidgetState extends State<AddDeadlineWidget> {
   final DeadlineDao deadlineDao;
   final int id;
   String title;
   DateTime deadline;
 
-  _MyStatefulWidgetState(this.deadlineDao, {
+  _AddDeadlineWidgetState(this.deadlineDao, {
     this.id,
     this.title,
     this.deadline,
