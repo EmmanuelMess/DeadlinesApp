@@ -24,6 +24,11 @@ dependencies:
   flutter:
     sdk: flutter
 
+  flutter_localizations:
+    sdk: flutter
+
+  intl_translation: ^0.17.10
+
   floor: ^0.13.0
   datetime_picker_formfield: ^1.0.0
 

@@ -3,12 +3,16 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'dart:math';
 
 import 'package:deadlinesapp/db/database.dart';
 import 'package:deadlinesapp/db/entity/deadline.dart';
 import 'package:deadlinesapp/db/dao/deadline_dao.dart';
+
+import 'package:deadlinesapp/l10n/localizations.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +31,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'DeadLines',
+      onGenerateTitle: (BuildContext context) => DeadlinesAppLocalizations.of(context).deadlines,
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
         visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -35,9 +39,18 @@ class MyApp extends StatelessWidget {
           inputDecorationTheme: InputDecorationTheme(border: OutlineInputBorder()),
       ),
       home: DeadlinesPage(
-        title: 'DeadLines',
         deadlineDao: deadlineDao,
       ),
+      localizationsDelegates: [
+        DeadlinesAppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('en', ''),
+        const Locale('es', ''),
+      ],
     );
   }
 }
@@ -45,12 +58,10 @@ class MyApp extends StatelessWidget {
 class DeadlinesPage extends StatefulWidget {
   DeadlinesPage({
     Key key,
-    this.title,
     @required this.deadlineDao
   }) : super(key: key);
 
   final DeadlineDao deadlineDao;
-  final String title;
 
   @override
   _DeadlinesPageState createState() => _DeadlinesPageState(deadlineDao);
@@ -82,22 +93,6 @@ class _DeadlinesPageState extends State<DeadlinesPage> {
     return Color.lerp(nowColor, longWayAwayColor, normalizedTime);
   }
 
-  String _dueText(Duration timeToDeadline) {
-    if(timeToDeadline.inDays > 0) {
-      return 'Due in ${timeToDeadline.inDays} days';
-    }
-    if(timeToDeadline.inHours > 1) {
-      return 'Due in ${timeToDeadline.inHours} hours!';
-    }
-    if(timeToDeadline.inMinutes > 15) {
-      return 'Due in ${timeToDeadline.inMinutes} minutes!';
-    }
-    if(timeToDeadline.inMilliseconds > 0) {
-      return 'Due NOW!';
-    }
-    return 'Late!';
-  }
-
   Widget _createCard(BuildContext context, final Deadline deadline) {
     final DateTime time = DateTime.fromMillisecondsSinceEpoch(deadline.deadline);
     final Duration timeToDeadline = time.difference(DateTime.now());
@@ -109,7 +104,7 @@ class _DeadlinesPageState extends State<DeadlinesPage> {
         children: <Widget>[
           ListTile(
             title: Text(deadline.title),
-            subtitle: Text(_dueText(timeToDeadline)),
+            subtitle: Text(DeadlinesAppLocalizations.of(context).dueText(timeToDeadline)),
             trailing: IconButton(
               icon: Icon(
                 Icons.edit,
@@ -133,14 +128,14 @@ class _DeadlinesPageState extends State<DeadlinesPage> {
             children: <Widget>[
               FlatButton(
                 textColor: Colors.white,
-                child: const Text('FINISHED'),
+                child: Text(DeadlinesAppLocalizations.of(context).finished),
                 onPressed: () {
                   _removeDeadline(deadline);
 
                   Scaffold.of(context).showSnackBar(SnackBar(
-                    content: Text('Nice!'),
+                    content: Text(DeadlinesAppLocalizations.of(context).nice),
                     action: SnackBarAction(
-                      label: 'UNDO',
+                      label: DeadlinesAppLocalizations.of(context).undo,
                       onPressed: () {
                         _addDeadline(deadline);
                       },
@@ -177,7 +172,7 @@ class _DeadlinesPageState extends State<DeadlinesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(DeadlinesAppLocalizations.of(context).deadlines),
       ),
       body: Builder(
         builder: (context) =>
@@ -194,7 +189,7 @@ class _DeadlinesPageState extends State<DeadlinesPage> {
                 builder: (context) => AddDeadlinePage(this.deadlineDao),
               ),
             ),
-        tooltip: 'Increment',
+        tooltip: DeadlinesAppLocalizations.of(context).addDeadline,
         child: Icon(Icons.add),
       ),
     );
@@ -216,9 +211,11 @@ class AddDeadlinePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Add deadline")),
+      appBar: AppBar(
+        title: Text(DeadlinesAppLocalizations.of(context).addDeadline),
+      ),
       body: Padding(
-        padding: EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24),
         child: MyStatefulWidget(
           this.deadlineDao,
           previousId: this.previousId,
@@ -276,12 +273,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         children: <Widget>[
           TextFormField(
             initialValue: title ?? "",
-            decoration: const InputDecoration(
-              hintText: 'Title',
+            decoration: InputDecoration(
+              hintText: DeadlinesAppLocalizations.of(context).title,
             ),
             validator: (value) {
               if (value.isEmpty) {
-                return 'Enter a title';
+                return DeadlinesAppLocalizations.of(context).enterATitle;
               }
               return null;
             },
@@ -294,7 +291,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   title = value;
                 }),
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
           DateTimeField(
             initialValue: deadline ?? _now,
             format: DateFormat("yyyy-MM-dd HH:mm"),
@@ -325,11 +322,11 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   deadline = value;
                 }),
           ),
-          Padding(padding: EdgeInsets.symmetric(vertical: 16.0)),
+          const Padding(padding: EdgeInsets.symmetric(vertical: 16.0)),
            FlatButton(
             color: Colors.deepOrangeAccent,
             textColor: Colors.white,
-            child: Text('SAVE'),
+            child: Text(DeadlinesAppLocalizations.of(context).save),
             onPressed: () async {
               if (_formKey.currentState.validate()) {
                 if(id == null) {
