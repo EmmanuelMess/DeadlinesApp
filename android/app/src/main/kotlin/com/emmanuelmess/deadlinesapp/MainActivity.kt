@@ -1,4 +1,4 @@
-package com.emmanuelmess.dealinesapp
+package com.emmanuelmess.deadlinesapp
 
 import io.flutter.embedding.android.FlutterActivity
 
