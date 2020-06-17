@@ -97,7 +97,7 @@ class DeadlinesPage extends StatelessWidget {
             title: Text(deadline.title),
             subtitle: Text(DeadlinesAppLocalizations.of(context).dueText(timeToDeadline)),
             trailing: IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.edit,
                 color: Colors.white,
               ),
@@ -323,9 +323,7 @@ class _AddDeadlineWidgetState extends State<AddDeadlineWidget> {
           FlatButton(
             color: Colors.deepOrangeAccent,
             textColor: Colors.white,
-            child: Text(DeadlinesAppLocalizations
-                .of(context)
-                .save),
+            child: Text(DeadlinesAppLocalizations.of(context).save),
             onPressed: () async {
               if (_formKey.currentState.validate()) {
                 if (id == null) {
