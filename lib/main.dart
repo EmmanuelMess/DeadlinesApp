@@ -55,22 +55,13 @@ class DeadlinesApp extends StatelessWidget {
   }
 }
 
-class DeadlinesPage extends StatefulWidget {
+class DeadlinesPage extends StatelessWidget {
   DeadlinesPage({
     Key key,
     @required this.deadlineDao
   }) : super(key: key);
 
   final DeadlineDao deadlineDao;
-
-  @override
-  _DeadlinesPageState createState() => _DeadlinesPageState(deadlineDao);
-}
-
-class _DeadlinesPageState extends State<DeadlinesPage> {
-  final DeadlineDao deadlineDao;
-
-  _DeadlinesPageState(this.deadlineDao);
 
   void _addDeadline(final Deadline deadline) async {
     await deadlineDao.insertDeadline(deadline);
@@ -274,11 +265,15 @@ class _AddDeadlineWidgetState extends State<AddDeadlineWidget> {
           TextFormField(
             initialValue: title ?? "",
             decoration: InputDecoration(
-              hintText: DeadlinesAppLocalizations.of(context).title,
+              hintText: DeadlinesAppLocalizations
+                  .of(context)
+                  .title,
             ),
             validator: (value) {
               if (value.isEmpty) {
-                return DeadlinesAppLocalizations.of(context).enterATitle;
+                return DeadlinesAppLocalizations
+                    .of(context)
+                    .enterATitle;
               }
               return null;
             },
@@ -298,7 +293,9 @@ class _AddDeadlineWidgetState extends State<AddDeadlineWidget> {
             onShowPicker: (context, currentValue) async {
               final date = await showDatePicker(
                 context: context,
-                firstDate: deadline != null && deadline.isBefore(_now)? deadline : _now,
+                firstDate: deadline != null && deadline.isBefore(_now)
+                    ? deadline
+                    : _now,
                 initialDate: currentValue ?? _now,
                 lastDate: DateTime(2100),
               );
@@ -323,13 +320,15 @@ class _AddDeadlineWidgetState extends State<AddDeadlineWidget> {
                 }),
           ),
           const Padding(padding: EdgeInsets.symmetric(vertical: 16.0)),
-           FlatButton(
+          FlatButton(
             color: Colors.deepOrangeAccent,
             textColor: Colors.white,
-            child: Text(DeadlinesAppLocalizations.of(context).save),
+            child: Text(DeadlinesAppLocalizations
+                .of(context)
+                .save),
             onPressed: () async {
               if (_formKey.currentState.validate()) {
-                if(id == null) {
+                if (id == null) {
                   await deadlineDao.insertDeadline(Deadline(
                     null,
                     title,
