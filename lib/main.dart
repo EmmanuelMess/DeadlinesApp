@@ -31,6 +31,7 @@ class DeadlinesApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      showPerformanceOverlay: false,
       onGenerateTitle: (BuildContext context) => DeadlinesAppLocalizations.of(context).deadlines,
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
