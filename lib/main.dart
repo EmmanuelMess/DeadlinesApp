@@ -36,7 +36,7 @@ class DeadlinesApp extends StatelessWidget {
         primarySwatch: Colors.deepOrange,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ).copyWith(
-          inputDecorationTheme: InputDecorationTheme(border: OutlineInputBorder()),
+          inputDecorationTheme: const InputDecorationTheme(border: OutlineInputBorder()),
       ),
       home: DeadlinesPage(
         deadlineDao: deadlineDao,
@@ -47,9 +47,9 @@ class DeadlinesApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: [
-        const Locale('en', ''),
-        const Locale('es', ''),
+      supportedLocales: const [
+        Locale('en', ''),
+        Locale('es', ''),
       ],
     );
   }
