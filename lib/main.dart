@@ -79,7 +79,7 @@ class DeadlinesPage extends StatelessWidget {
       return longWayAwayColor;
     }
 
-    double normalizedTime = max<double>(0, timeToDeadline.inDays / 20.0);
+    final normalizedTime = max<double>(0, timeToDeadline.inDays / 20.0);
 
     return Color.lerp(nowColor, longWayAwayColor, normalizedTime);
   }
