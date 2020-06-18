@@ -1,9 +1,9 @@
 import 'dart:ui';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'dart:math';
 
@@ -11,16 +11,24 @@ import 'package:deadlinesapp/db/database.dart';
 import 'package:deadlinesapp/db/entity/deadline.dart';
 import 'package:deadlinesapp/db/dao/deadline_dao.dart';
 
-import 'package:deadlinesapp/l10n/localizations.dart';
-
+import 'package:deadlinesapp/l10n/localization.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
+  final database = await $FloorAppDatabase.databaseBuilder('app_database.db')
+      .build();
   final deadlineDao = database.deadlineDao;
 
-  runApp(DeadlinesApp(deadlineDao));
+  runApp(
+    EasyLocalization(
+      supportedLocales: [Locale('en'), Locale('es')],
+      path: 'lib/l10n',
+      fallbackLocale: Locale('en'),
+      useOnlyLangCode: true,
+      child: DeadlinesApp(deadlineDao),
+    )
+  );
 }
 
 class DeadlinesApp extends StatelessWidget {
@@ -30,9 +38,11 @@ class DeadlinesApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //context.locale = Locale(context.locale.languageCode, '');
+
     return MaterialApp(
       showPerformanceOverlay: false,
-      onGenerateTitle: (BuildContext context) => DeadlinesAppLocalizations.of(context).deadlines,
+      onGenerateTitle: (BuildContext context) => 'Deadlines'.tr(),
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
         visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -42,16 +52,9 @@ class DeadlinesApp extends StatelessWidget {
       home: DeadlinesPage(
         deadlineDao: deadlineDao,
       ),
-      localizationsDelegates: [
-        DeadlinesAppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('en', ''),
-        Locale('es', ''),
-      ],
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
     );
   }
 }
@@ -96,7 +99,7 @@ class DeadlinesPage extends StatelessWidget {
         children: <Widget>[
           ListTile(
             title: Text(deadline.title),
-            subtitle: Text(DeadlinesAppLocalizations.of(context).dueText(timeToDeadline)),
+            subtitle: Text(Localization.dueText(timeToDeadline)),
             trailing: IconButton(
               icon: const Icon(
                 Icons.edit,
@@ -120,14 +123,14 @@ class DeadlinesPage extends StatelessWidget {
             children: <Widget>[
               FlatButton(
                 textColor: Colors.white,
-                child: Text(DeadlinesAppLocalizations.of(context).finished),
+                child: Text('FINISHED').tr(),
                 onPressed: () {
                   _removeDeadline(deadline);
 
                   Scaffold.of(context).showSnackBar(SnackBar(
-                    content: Text(DeadlinesAppLocalizations.of(context).nice),
+                    content: Text('Nice!').tr(),
                     action: SnackBarAction(
-                      label: DeadlinesAppLocalizations.of(context).undo,
+                      label: 'UNDO'.tr(),
                       onPressed: () {
                         _addDeadline(deadline);
                       },
@@ -164,7 +167,7 @@ class DeadlinesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(DeadlinesAppLocalizations.of(context).deadlines),
+        title: Text('Deadlines').tr(),
       ),
       body: Builder(
         builder: (context) =>
@@ -181,7 +184,7 @@ class DeadlinesPage extends StatelessWidget {
                 builder: (context) => AddDeadlinePage(this.deadlineDao),
               ),
             ),
-        tooltip: DeadlinesAppLocalizations.of(context).addDeadline,
+        tooltip: 'Add deadline'.tr(),
         child: Icon(Icons.add),
       ),
     );
@@ -204,7 +207,7 @@ class AddDeadlinePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(DeadlinesAppLocalizations.of(context).addDeadline),
+        title: Text( 'Add deadline').tr(),
       ),
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -266,15 +269,11 @@ class _AddDeadlineWidgetState extends State<AddDeadlineWidget> {
           TextFormField(
             initialValue: title ?? "",
             decoration: InputDecoration(
-              hintText: DeadlinesAppLocalizations
-                  .of(context)
-                  .title,
+              hintText: 'Title'.tr(),
             ),
             validator: (value) {
               if (value.isEmpty) {
-                return DeadlinesAppLocalizations
-                    .of(context)
-                    .enterATitle;
+                return 'Enter a title'.tr();
               }
               return null;
             },
@@ -324,7 +323,7 @@ class _AddDeadlineWidgetState extends State<AddDeadlineWidget> {
           FlatButton(
             color: Colors.deepOrangeAccent,
             textColor: Colors.white,
-            child: Text(DeadlinesAppLocalizations.of(context).save),
+            child: Text('SAVE').tr(),
             onPressed: () async {
               if (_formKey.currentState.validate()) {
                 if (id == null) {
