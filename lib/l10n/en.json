@@ -1,5 +1,8 @@
 {
   "Deadlines": "Deadlines",
+  "About": "About",
+  "Version": "Version {}",
+  "Description": "Made with love\nby Emmanuel Messulam (EmmanuelMess)",
   "Add deadline": "Add deadline",
   "dueDays": "Due in {} days",
   "dueHours": "Due in {} hours",

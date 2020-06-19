@@ -1,5 +1,8 @@
 {
   "Deadlines": "Fechas limite",
+  "About": "Acerca de",
+  "Version": "Versión {}",
+  "Description": "Hecho con amor\npor Emmanuel Messulam (EmmanuelMess)",
   "Add deadline": "Añadir fecha limite",
   "dueDays": "A entregar en {} dias",
   "dueHours": "A entregar en {} horas",

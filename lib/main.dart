@@ -12,6 +12,7 @@ import 'package:deadlinesapp/db/entity/deadline.dart';
 import 'package:deadlinesapp/db/dao/deadline_dao.dart';
 
 import 'package:deadlinesapp/l10n/localization.dart';
+import 'package:deadlinesapp/about.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -167,6 +168,19 @@ class DeadlinesPage extends StatelessWidget {
       Scaffold(
         appBar: AppBar(
           title: Text('Deadlines').tr(),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.info_outline),
+              tooltip: 'About'.tr(),
+              onPressed: () =>
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AboutPage()
+                    ),
+                  ),
+            )
+          ],
         ),
         body: Builder(
           builder: (context) =>
