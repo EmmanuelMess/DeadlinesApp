@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+final version = "v0.1.0";
+
 class AboutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>
@@ -38,7 +40,7 @@ class AboutPage extends StatelessWidget {
                     Text(
                       "Version",
                       textScaleFactor: 1,
-                    ).tr(args: ["v1.0"]),
+                    ).tr(args: [version]),
                     const Divider(
                       color: Colors.grey,
                       height: 16.0,
@@ -47,7 +49,7 @@ class AboutPage extends StatelessWidget {
                       endIndent: 8,
                     ),
                     Container(
-                        margin: EdgeInsets.symmetric(horizontal: 16.0),
+                        margin: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Text(
                           "Description",
                           textScaleFactor: 1.25,
