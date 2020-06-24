@@ -73,19 +73,6 @@ class DeadlinesPage extends StatelessWidget {
     await deadlineDao.deleteDeadlineById(deadline);
   }
 
-  Color _getCardColor(Duration timeToDeadline) {
-    final longWayAwayColor = Colors.red.shade100;
-    final nowColor = Colors.red;
-
-    if (timeToDeadline.inDays >= 20) {
-      return longWayAwayColor;
-    }
-
-    final normalizedTime = max<double>(0, timeToDeadline.inDays / 20.0);
-
-    return Color.lerp(nowColor, longWayAwayColor, normalizedTime);
-  }
-
   Route _slideRouteAnimation(final RoutePageBuilder pageBuilder) {
     return PageRouteBuilder(
       pageBuilder: pageBuilder,
@@ -106,80 +93,57 @@ class DeadlinesPage extends StatelessWidget {
   }
 
   Widget _createCard(final BuildContext context, final Deadline deadline) {
-    final DateTime time = DateTime.fromMillisecondsSinceEpoch(
-        deadline.deadline);
-    final Duration timeToDeadline = time.difference(DateTime.now());
+    final DateTime time = DateTime.fromMillisecondsSinceEpoch(deadline.deadline);
 
-    return Card(
-      color: _getCardColor(timeToDeadline),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          ListTile(
-            title: Text(deadline.title),
-            subtitle: Text(Localization.dueText(timeToDeadline)),
-            trailing: IconButton(
-              icon: const Icon(
-                Icons.edit,
-                color: Colors.white,
-              ),
-              onPressed: () =>
-                  Navigator.push(
-                    context,
-                    _slideRouteAnimation(
-                      (_, __, ___) =>
-                          AddDeadlinePage(
-                            this.deadlineDao,
-                            previousId: deadline.id,
-                            previousTitle: deadline.title,
-                            previousDeadline: time,
-                          )
-                    ),
-                  ),
+    return DeadlineCard(
+      deadlineDao: deadlineDao,
+      deadline: deadline,
+      onPressedEdit: () =>
+          Navigator.push(
+            context,
+            _slideRouteAnimation(
+                    (_, __, ___) =>
+                    AddDeadlinePage(
+                      this.deadlineDao,
+                      previousId: deadline.id,
+                      previousTitle: deadline.title,
+                      previousDeadline: time,
+                    )
             ),
           ),
-          ButtonBar(
-            children: <Widget>[
-              FlatButton(
-                textColor: Colors.white,
-                child: Text('FINISHED').tr(),
-                onPressed: () {
-                  _removeDeadline(deadline);
+      onPressedFinished: () {
+        _removeDeadline(deadline);
 
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                    content: Text('Nice!').tr(),
-                    action: SnackBarAction(
-                      label: 'UNDO'.tr(),
-                      onPressed: () {
-                        _addDeadline(deadline);
-                      },
-                    ),
-                  ));
-                },
-              ),
-            ],
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text('Nice!').tr(),
+          action: SnackBarAction(
+            label: 'UNDO'.tr(),
+            onPressed: () {
+              _addDeadline(deadline);
+            },
           ),
-        ],
-      ),
+        ));
+      },
     );
   }
 
-  Widget _createCards(BuildContext context) =>
-      StreamBuilder<List<Deadline>>(
-        stream: deadlineDao.findAllDeadlinesAsStream(),
-        builder: (_, snapshot) {
-          if (!snapshot.hasData) return ListView();
+  Widget _createCards(BuildContext context) {
+    return StreamBuilder<List<Deadline>>(
+      stream: deadlineDao.findAllDeadlinesAsStream(),
+      builder: (_, snapshot) {
+        if (!snapshot.hasData) return ListView();
 
-          final tasks = snapshot.data;
+        final tasks = snapshot.data;
 
-          return ListView.builder(
-            itemCount: tasks.length,
-            itemBuilder: (_, index) {
-              return _createCard(context, tasks[index]);
-            },
-          );
-        },
-      );
+        return ListView.builder(
+          itemCount: tasks.length,
+          itemBuilder: (_, index) {
+            return _createCard(context, tasks[index]);
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) =>
@@ -215,4 +179,68 @@ class DeadlinesPage extends StatelessWidget {
           child: Icon(Icons.add),
         ),
       );
+}
+
+class DeadlineCard extends StatelessWidget {
+  const DeadlineCard({
+    Key key,
+    @required this.deadlineDao,
+    @required this.deadline,
+    @required this.onPressedEdit,
+    @required this.onPressedFinished,
+  }) : super(key: key);
+
+  final DeadlineDao deadlineDao;
+  final Deadline deadline;
+  final VoidCallback onPressedEdit;
+  final VoidCallback onPressedFinished;
+
+  Color _getCardColor(Duration timeToDeadline) {
+    final longWayAwayColor = Colors.red.shade100;
+    final nowColor = Colors.red;
+
+    if (timeToDeadline.inDays >= 20) {
+      return longWayAwayColor;
+    }
+
+    final normalizedTime = max<double>(0, timeToDeadline.inDays / 20.0);
+
+    return Color.lerp(nowColor, longWayAwayColor, normalizedTime);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final DateTime time = DateTime.fromMillisecondsSinceEpoch(
+        deadline.deadline);
+    final Duration timeToDeadline = time.difference(DateTime.now());
+
+    return  Card(
+      color: _getCardColor(timeToDeadline),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          ListTile(
+            title: Text(deadline.title),
+            subtitle: Text(Localization.dueText(timeToDeadline)),
+            trailing: IconButton(
+              icon: const Icon(
+                Icons.edit,
+                color: Colors.white,
+              ),
+              onPressed: onPressedEdit,
+            ),
+          ),
+          ButtonBar(
+            children: <Widget>[
+              FlatButton(
+                textColor: Colors.white,
+                child: Text('FINISHED').tr(),
+                onPressed: onPressedFinished,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }
