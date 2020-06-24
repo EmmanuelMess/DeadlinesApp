@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-final version = "v0.1.0";
+final version = "v1.0.0";
 
 class AboutPage extends StatelessWidget {
   @override
