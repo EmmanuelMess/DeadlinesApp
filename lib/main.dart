@@ -39,6 +39,7 @@ class DeadlinesApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>
       MaterialApp(
+        debugShowCheckedModeBanner: false,
         showPerformanceOverlay: false,
         onGenerateTitle: (BuildContext context) => 'Deadlines'.tr(),
         theme: ThemeData(
