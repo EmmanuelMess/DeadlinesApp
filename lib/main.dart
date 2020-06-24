@@ -58,7 +58,7 @@ class DeadlinesApp extends StatelessWidget {
 }
 
 class DeadlinesPage extends StatelessWidget {
-  DeadlinesPage({
+  const DeadlinesPage({
     Key key,
     @required this.deadlineDao
   }) : super(key: key);
@@ -86,7 +86,26 @@ class DeadlinesPage extends StatelessWidget {
     return Color.lerp(nowColor, longWayAwayColor, normalizedTime);
   }
 
-  Widget _createCard(BuildContext context, final Deadline deadline) {
+  Route _slideRouteAnimation(final RoutePageBuilder pageBuilder) {
+    return PageRouteBuilder(
+      pageBuilder: pageBuilder,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return SlideTransition(
+          position: animation.drive(
+            Tween(
+              begin: Offset(1.0, 0.0),
+              end: Offset.zero,
+            ).chain(
+              CurveTween(curve: Curves.ease),
+            ),
+          ),
+          child: child,
+        );
+      },
+    );
+  }
+
+  Widget _createCard(final BuildContext context, final Deadline deadline) {
     final DateTime time = DateTime.fromMillisecondsSinceEpoch(
         deadline.deadline);
     final Duration timeToDeadline = time.difference(DateTime.now());
@@ -107,14 +126,14 @@ class DeadlinesPage extends StatelessWidget {
               onPressed: () =>
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) =>
+                    _slideRouteAnimation(
+                      (_, __, ___) =>
                           AddDeadlinePage(
                             this.deadlineDao,
                             previousId: deadline.id,
                             previousTitle: deadline.title,
                             previousDeadline: time,
-                          ),
+                          )
                     ),
                   ),
             ),
@@ -174,9 +193,7 @@ class DeadlinesPage extends StatelessWidget {
               onPressed: () =>
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => AboutPage()
-                    ),
+                    _slideRouteAnimation((_, __, ___) => AboutPage()),
                   ),
             )
           ],
@@ -192,9 +209,7 @@ class DeadlinesPage extends StatelessWidget {
           onPressed: () =>
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => AddDeadlinePage(this.deadlineDao),
-                ),
+                _slideRouteAnimation((_, __, ___) => AddDeadlinePage(this.deadlineDao)),
               ),
           tooltip: 'Add deadline'.tr(),
           child: Icon(Icons.add),
