@@ -14,5 +14,6 @@
   "UNDO": "DESHACER",
   "Title": "Titulo",
   "Enter a title": "Ingresar titulo",
+  "Enter a time after now": "Ingresar una fecha despues de ahora",
   "SAVE": "GUARDAR"
 }

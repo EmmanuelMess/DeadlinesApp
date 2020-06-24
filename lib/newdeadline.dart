@@ -125,6 +125,12 @@ class _AddDeadlineWidgetState extends State<AddDeadlineWidget> {
                   return currentValue;
                 }
               },
+              validator: (value) {
+                if (value.isBefore(_now) || value.isAtSameMomentAs(_now)) {
+                  return 'Enter a time after now'.tr();
+                }
+                return null;
+              },
               onChanged: (DateTime value) =>
                   setState(() {
                     deadline = value;
