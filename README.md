@@ -2,6 +2,8 @@
 
 <img src="icon.png" data-canonical-src="icon.png" height="50" />
 
+[![Chat on Telegram](https://img.shields.io/badge/Chat%20on-Telegram-brightgreen.svg)](https://t.me/EmmanuelsApps)  
+
 Simple app for managing deadlines
 
 ## Download
