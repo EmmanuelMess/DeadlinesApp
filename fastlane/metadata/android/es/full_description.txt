@@ -1,1 +1,2 @@
-Guarda fechas limite para que puedas recordarlas!
+Muestra tus fechas limite y el tiempo que queda para terminarlas.
+Las cartas se vuelven más y más rojas a medida que queda menos tiempo.

@@ -1,1 +1,2 @@
-Simple app for managing deadlines
+It shows your deadlines and the time left to finish them.
+The cards go red as time runs down to finish them.
