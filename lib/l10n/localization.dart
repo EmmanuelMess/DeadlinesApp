@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 class Localization {
   static String dueText(Duration timeToDeadline) {
-    if(timeToDeadline.inDays > 0) {
+    if(timeToDeadline.inDays > 1) {
       return 'dueDays'.tr(args: [timeToDeadline.inDays.toString()]);
     }
     if(timeToDeadline.inHours > 1) {
