@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import 'flavorconf/flavors.dart';
+
 final version = "v1.0.0";
 
 class AboutPage extends StatelessWidget {
@@ -32,7 +34,7 @@ class AboutPage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "Deadlines",
+                      FlavorConfig.appName(),
                       textScaleFactor: 2.0,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ).tr(),

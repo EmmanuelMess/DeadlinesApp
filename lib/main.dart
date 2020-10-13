@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:deadlinesapp/flavorconf/flavors.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
@@ -41,7 +42,7 @@ class DeadlinesApp extends StatelessWidget {
       MaterialApp(
         debugShowCheckedModeBanner: false,
         showPerformanceOverlay: false,
-        onGenerateTitle: (BuildContext context) => 'Deadlines'.tr(),
+        onGenerateTitle: (BuildContext context) => FlavorConfig.appName().tr(),
         theme: ThemeData(
           primarySwatch: Colors.deepOrange,
           visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -150,7 +151,7 @@ class DeadlinesPage extends StatelessWidget {
   Widget build(BuildContext context) =>
       Scaffold(
         appBar: AppBar(
-          title: Text('Deadlines').tr(),
+          title: Text(FlavorConfig.appName()).tr(),
           actions: <Widget>[
             IconButton(
               icon: const Icon(Icons.info_outline),

@@ -1,5 +1,6 @@
 {
-  "Deadlines": "Fechas limite",
+  "DeadlinesFree": "Fechas limite Gratis",
+  "DeadlinesPro": "Fechas limite Pro",
   "About": "Acerca de",
   "Version": "Versión {}",
   "Description": "Hecho con amor\npor Emmanuel Messulam (EmmanuelMess)",
