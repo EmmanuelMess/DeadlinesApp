@@ -60,8 +60,27 @@ android {
         }
     }
     buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.cfg'
+        }
         release {
             signingConfig signingConfigs.release
+
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.cfg'
+        }
+    }
+
+    flavorDimensions 'base'
+
+    productFlavors {
+        free {
+            dimension 'base'
+        }
+        pro {
+            dimension 'base'
         }
     }
 }
