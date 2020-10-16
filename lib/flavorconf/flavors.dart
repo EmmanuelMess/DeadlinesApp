@@ -3,7 +3,7 @@ const int FLAVOR_FREE = 0;
 const int FLAVOR_PAID = 1;
 const int FLAVOR_FDROID = FLAVOR_FREE;
 
-const int FLAVOR = FLAVOR_DEBUG;
+const int FLAVOR = FLAVOR_FDROID;
 
 class FlavorConfig {
   static String appName() {
