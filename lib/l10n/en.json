@@ -1,5 +1,6 @@
 {
-  "DeadlinesFree": "Deadlines Debug",
+  "DeadlinesDebug": "Deadlines Debug",
+  "DeadlinesFree": "Deadlines Free",
   "DeadlinesPro": "Deadlines Pro",
   "About": "About",
   "Version": "Version {}",
