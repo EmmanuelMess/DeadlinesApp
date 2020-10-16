@@ -82,7 +82,6 @@ android {
         }
         pro {
             dimension 'base'
-            applicationIdSuffix ".pro"
         }
     }
 }
