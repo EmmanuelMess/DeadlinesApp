@@ -4,7 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 import 'flavorconf/flavors.dart';
 
-final version = "v1.0.1";
+final version = "v1.0.2";
 
 class AboutPage extends StatelessWidget {
   @override
