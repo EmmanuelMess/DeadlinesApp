@@ -8,7 +8,7 @@ Simple app for managing deadlines
 
 ## Download
 [<img alt="Get it on Google Play" height="80" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png">](https://play.google.com/store/apps/details?id=com.emmanuelmess.deadlinesapp)
-[<img alt="Get it on F-Droid" height="80" src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png">](https://f-droid.org/packages/com.emmanuelmess.deadlinesapp/)
+[<img alt="Get it on F-Droid" height="80" src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png">](https://f-droid.org/packages/com.emmanuelmess.deadlinesapp.free/)
 
 ## Screenshots
 <img src="Screenshot_mainlist.png" data-canonical-src="Screenshot_mainlist.png" height="350" /> <img src="Screenshot_editdeadline.png" data-canonical-src="Screenshot_editdeadline.png" height="350" />
